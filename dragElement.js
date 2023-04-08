@@ -1,6 +1,7 @@
-const createDragElement = () => {
+const createDragElement = (elementId) => {
   const dragElement = document.createElement("div");
   dragElement.classList.add("drag-element");
+  dragElement.id = elementId;
   dragElement.style.backgroundColor = "green";
   dragElement.style.position = "absolute";
   dragElement.style.top = "20px";

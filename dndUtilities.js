@@ -21,8 +21,18 @@ const isBlackPixel = (data) => {
     const a = data[i + 3];
 
     // Check if the pixel is black (r=g=b=a=0)
-    if (r === 0 && g === 0 && b === 0 && a === 255) return true;
+    if (r !== 0 || g !== 0 || b !== 0 || a === 255) return true;
   }
 
   return false;
+};
+
+const isColliding = (dragElement, dropEelement) => {
+  const HEIGHT_AND_WIDTH = 50;
+  return (
+    dragElement.x < dropEelement.x + HEIGHT_AND_WIDTH &&
+    dragElement.x + HEIGHT_AND_WIDTH > dropEelement.x &&
+    dragElement.y < dropEelement.y + HEIGHT_AND_WIDTH &&
+    dragElement.y + HEIGHT_AND_WIDTH > dropEelement.y
+  );
 };
