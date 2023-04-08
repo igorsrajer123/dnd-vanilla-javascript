@@ -22,6 +22,6 @@ const setMoveTargetColor = (target, color) => {
   }
 };
 
-const translateMoveTargetElement = (target, x, y) => {
+const translateMoveTarget = (target, x, y) => {
   target.style.transform = "translate(" + x + "px, " + y + "px)";
 };

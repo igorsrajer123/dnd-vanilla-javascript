@@ -11,26 +11,31 @@ const setMoveTargetXY = (target, x, y) => {
 };
 
 const returnToValidPosition = (event, element) => {
-  translateMoveTargetElement(
-    event.target,
-    element.lastValidX,
-    element.lastValidY
-  );
+  translateMoveTarget(event.target, element.lastValidX, element.lastValidY);
   setMoveTargetColor(event.target, "green");
   event.target.style.transition = "0.2s";
 
   setMoveTargetXY(event.target, element.lastValidX, element.lastValidY);
 };
 
+const updateRestrictedCoordinates = (element, coordinate, event) => {
+  for (coordinate of restirctedCoords) {
+    if (coordinate.id === element.id) {
+      coordinate.x = getMoveTargetXY(event.target).x;
+      coordinate.y = getMoveTargetXY(event.target).y;
+      break;
+    }
+  }
+};
+
 const handleItemMove = (event, element, restirctedCoords) => {
   const x = (getMoveTargetXY(event.target).x || 0) + event.dx;
   const y = (getMoveTargetXY(event.target).y || 0) + event.dy;
 
-  event.target.style.transform = "translate(" + x + "px, " + y + "px)";
+  translateMoveTarget(event.target, x, y);
   event.target.style.transition = "0s";
 
   setMoveTargetXY(event.target, x, y);
-
   if (isInsideRestrictedArea(event.target, canvas)) {
     setMoveTargetColor(event.target, "red");
   } else {
@@ -43,16 +48,6 @@ const handleItemMove = (event, element, restirctedCoords) => {
         }
       }
     });
-  }
-};
-
-const updateRestrictedCoordinates = (element, coordinate, event) => {
-  for (coordinate of restirctedCoords) {
-    if (coordinate.id === element.id) {
-      coordinate.x = getMoveTargetXY(event.target).x;
-      coordinate.y = getMoveTargetXY(event.target).y;
-      break;
-    }
   }
 };
 
