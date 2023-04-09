@@ -36,6 +36,7 @@ const handleItemMove = (event, element, restirctedCoords) => {
   event.target.style.transition = "0s";
 
   setMoveTargetXY(event.target, x, y);
+
   if (isInsideRestrictedArea(event.target, canvas)) {
     setMoveTargetColor(event.target, "red");
   } else {
@@ -51,7 +52,37 @@ const handleItemMove = (event, element, restirctedCoords) => {
   }
 };
 
-const handleItemDrop = (event, element, restirctedCoords) => {
+const handleDropNewElement = (event) => {
+  console.log("NOVI");
+  let clone = cloneDragElement(
+    event,
+    interact.getElementRect(draggableContainer)
+  );
+
+  draggableContainer.appendChild(clone);
+
+  restirctedCoords = [...restirctedCoords, { id: clone.id, x: 0, y: 0 }];
+
+  copiedElements = [
+    ...copiedElements,
+    {
+      id: clone.id,
+      html: clone,
+      lastValidX: 0,
+      lastValidY: 0,
+    },
+  ];
+
+  addDraggableElements({
+    id: clone.id,
+    html: clone,
+    lastValidX: 0,
+    lastValidY: 0,
+  });
+};
+
+const handleDropExistingElement = (event, element, restirctedCoords) => {
+  console.log("STARI");
   if (isInsideRestrictedArea(event.target, canvas)) {
     returnToValidPosition(event, element);
   } else {

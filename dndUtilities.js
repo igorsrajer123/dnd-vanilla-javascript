@@ -27,6 +27,7 @@ const isBlackPixel = (data) => {
   return false;
 };
 
+//update real height and width
 const isColliding = (dragElement, dropEelement) => {
   const HEIGHT_AND_WIDTH = 50;
   return (
