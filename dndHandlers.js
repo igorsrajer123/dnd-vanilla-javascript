@@ -53,7 +53,6 @@ const handleItemMove = (event, element, restirctedCoords) => {
 };
 
 const handleDropNewElement = (event) => {
-  console.log("NOVI");
   let clone = cloneDragElement(
     event,
     interact.getElementRect(draggableContainer)
