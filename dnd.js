@@ -18,65 +18,46 @@ let copiedElements = [];
 
 elements.forEach((element) => {
   interact(element).draggable({
-    onstart: (event) => {
-      const originalRect = event.target.getBoundingClientRect();
-      const clone = event.target.cloneNode(true);
+    onstart: function (event) {
+      const clonedElement = event.target.cloneNode(true);
+      event.target.clonedElement = clonedElement;
 
-      // Create a placeholder element
-      const placeholder = document.createElement("div");
-      placeholder.style.width = originalRect.width + "px";
-      placeholder.style.height = originalRect.height + "px";
+      const containerRect = draggableContainer.getBoundingClientRect();
 
-      // Insert the placeholder before the original element
-      event.target.parentNode.insertBefore(placeholder, event.target);
+      const initialX =
+        event.clientX0 - containerRect.left - event.rect.width / 2;
+      const initialY =
+        event.clientY0 -
+        containerRect.top -
+        containerRect.width / 3 -
+        event.rect.height / 2;
 
-      clone.style.position = "absolute";
-      clone.style.top = originalRect.top + "px";
-      clone.style.left = originalRect.left + "px";
-      document.body.appendChild(clone);
+      clonedElement.style.position = "absolute";
+      clonedElement.style.pointerEvents = "none";
+      clonedElement.style.transform = `translate(${initialX}px, ${initialY}px)`;
+      clonedElement.setAttribute("data-x", initialX);
+      clonedElement.setAttribute("data-y", initialY);
 
-      // Add draggable event listeners to the new cloned element
-      interact(clone).draggable(event.interactable.options.draggable);
-
-      // Set the clone as the current target of the drag event
-      event.interactable.target = clone;
-      // Set the clone's initial position to the same as the original element
-      clone.setAttribute("data-x", 0);
-      clone.setAttribute("data-y", 0);
-
-      // Add the placeholder to the event so that it can be removed later
-      event.placeholder = placeholder;
-      console.log(document.querySelectorAll(".elements > div"));
+      draggableContainer.appendChild(clonedElement);
     },
-    onmove: (event) => {
-      // Get the current element being dragged (the clone)
-      const currentElement = event.target;
-      if (!currentElement.id.includes("random"))
-        currentElement.id = currentElement.id + "-random";
-      // Get the x and y coordinates of the drag event
+    onmove: function (event) {
+      const clonedElement = event.target.clonedElement;
+
       const x =
-        (parseFloat(currentElement.getAttribute("data-x")) || 0) + event.dx;
+        (parseFloat(clonedElement.getAttribute("data-x")) || 0) + event.dx;
       const y =
-        (parseFloat(currentElement.getAttribute("data-y")) || 0) + event.dy;
-      // Translate the clone to the new position
-      currentElement.style.transform = `translate(${x}px, ${y}px)`;
-      // Get the original element (the one that was cloned)
-      // Update the clone's data-x and data-y attributes with the new position
-      currentElement.setAttribute("data-x", x);
-      currentElement.setAttribute("data-y", y);
+        (parseFloat(clonedElement.getAttribute("data-y")) || 0) + event.dy;
+
+      clonedElement.style.transform = `translate(${x}px, ${y}px)`;
+
+      clonedElement.setAttribute("data-x", x);
+      clonedElement.setAttribute("data-y", y);
     },
-    onend: (event) => {
-      if (event.target.id.includes("random")) {
-        event.target.style.transform = "";
-
-        // Remove the data-x and data-y attributes from the cloned element
-        event.target.removeAttribute("data-x");
-        event.target.removeAttribute("data-y");
-        event.target.remove();
-
-        // Remove the placeholder element
-        event.placeholder.remove();
-      }
+    onend: function (event) {
+      draggableContainer.removeChild(event.target.clonedElement);
+      delete event.target.clonedElement;
+      delete event.target.initialClientX;
+      delete event.target.initialClientY;
     },
   });
 });
